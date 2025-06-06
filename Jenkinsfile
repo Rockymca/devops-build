@@ -3,6 +3,8 @@ pipeline {
 
     environment {
         IMAGE_NAME = 'devops-react-app'
+        CONTAINER_PORT = '80'
+        HOST_PORT = '80'
     }
 
     stages {
@@ -20,8 +22,17 @@ pipeline {
 
         stage('Deploy Container') {
             steps {
-                sh 'docker run -d -p 80:80 $IMAGE_NAME'
+                sh 'docker run -d -p $HOST_PORT:$CONTAINER_PORT $IMAGE_NAME'
             }
+        }
+    }
+
+    post {
+        failure {
+            echo 'Pipeline failed. Please check the logs.'
+        }
+        success {
+            echo 'Pipeline executed successfully.'
         }
     }
 }
